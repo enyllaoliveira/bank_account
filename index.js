@@ -33,6 +33,7 @@ function operation() {
       } else if (action === "Depositar") {
         deposit();
       } else if (action === "Sacar") {
+        withdraw();
       } else if (action === "Sair") {
         console.log(chalk.bgBlue.black("Obrigada por usar o Accounts"));
         process.exit();
@@ -179,6 +180,37 @@ function getAccountBalance() {
       const accountData = getAccount(accountName);
       console.log(chalk.bgBlue.black(`Seu saldo é R$${accountData.balance}`));
       operation();
+    })
+    .catch((err) => console.log(err));
+}
+
+function withdraw() {
+  inquirer
+    .prompt([
+      {
+        name: "accountName",
+        message: "Qual é o nome da sua conta?",
+      },
+    ])
+    .then((answer) => {
+      const accountName = answer["accountName"];
+      if (!checkAccount(accountName)) {
+        return withdraw();
+      }
+
+      inquirer
+        .prompt([
+          {
+            name: "amount",
+            message: "Qual é o valor do saque?",
+          },
+        ])
+        .then((answer) => {
+          const amount = answer["amount"];
+          console.log(amount);
+          operation();
+        })
+        .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
 }
